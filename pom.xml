@@ -144,7 +144,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<mainClass>
-								br.com.paqueradebar.PaqueradebarApplication</mainClass> <!--
+								br.com.zoi.apptdah.ApptdahApplication</mainClass> <!--
 							Substitua pelo caminho da sua classe main -->
 						</manifest>
 					</archive>
