@@ -3,7 +3,7 @@ spring:
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     url: ${DATABASE_URL}
-    driver-class-name: org.postgresql.Driver  # Driver JDBC do PostgreSQL
+    driver-class-name: org.postgresql.Driver  
     
   jpa:
     show-sql: true
