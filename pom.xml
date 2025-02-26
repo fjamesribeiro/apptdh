@@ -144,8 +144,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<mainClass>
-								br.com.zoi.apptdah.ApptdahApplication</mainClass> <!--
-							Substitua pelo caminho da sua classe main -->
+								br.com.zoi.apptdah.ApptdahApplication</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
