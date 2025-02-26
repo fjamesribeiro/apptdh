@@ -21,6 +21,9 @@ jobs:
 
       - name: Build Project
         run: mvn clean install -DskipTests
+
+      - name: List target directory
+        run: ls -l target/
         
       - name: Login Docker Hub
         run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
