@@ -45,5 +45,5 @@ jobs:
         run: docker rm -f api-apptdah
         
       - name: Run docker container
-        run: docker run -d -p 8080:8080 -e DATABASE_USERNAME=${{secrets.DATABASE_USERNAME}} -e DATABASE_PASSWORD='${{secrets.DATABASE_PASSWORD}}' -e DATABASE_URL=${{secrets.DATABASE_URL}} -e APP_PRIVATE_KEY='${{ secrets.APP_PRIVATE_KEY }}' -e APP_PUBLIC_KEY='${{ secrets.APP_PUBLIC_KEY }}' --name api-apptdah jamesribeiro/api-apptdah        
+        run: docker run -d -p 8080:8080 -e DATABASE_USERNAME=${{secrets.DATABASE_USERNAME}} -e DATABASE_PASSWORD='${{secrets.DATABASE_PASSWORD}}' -e DATABASE_URL=${{secrets.DATABASE_URL}} -e APP_PRIVATE_KEY='${{ secrets.APP_PRIVATE_KEY }}' -e APP_PUBLIC_KEY='${{ secrets.APP_PUBLIC_KEY }}' --network minha-rede --name api-apptdah jamesribeiro/api-apptdah        
         

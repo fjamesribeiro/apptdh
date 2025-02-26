@@ -1,6 +1,7 @@
 services:
   postgres:
     image: postgres:13
+    container_name: postgres
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: adm1in@8042
@@ -9,6 +10,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - minha-rede
 
 volumes:
-  postgres_data:  # Definindo o volume postgres_data	  
+  postgres_data:
+
+networks:
+  minha-rede:
