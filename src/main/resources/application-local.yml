@@ -4,7 +4,18 @@ spring:
     password: adm1in@8042
     url: jdbc:postgresql://localhost:5432/apptdah
     driver-class-name: org.postgresql.Driver  # Driver JDBC do PostgreSQL
-    
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - profile
+              - email
+
   jpa:
     show-sql: true
     properties:
@@ -23,16 +34,13 @@ logging:
     name: logs/spring.log
   logback:
     rollingpolicy:
-       total-size-cap: 100MB
-       max-history: 30
-       max-file-size: 10Mb
-       file-name-pattern: logs/archive/spring.%d{yyyy-MM-dd}.%d{HH:mm:ss.SSS}.%i.log
+      total-size-cap: 100MB
+      max-history: 30
+      max-file-size: 10MB
+      file-name-pattern: logs/archive/spring.%d{yyyy-MM-dd}.%i.log
   level:
-     root: info
+    root: info
 
 jwt:
   private-key: app.key
   public-key: app.pub
-
-
-    

@@ -4,7 +4,9 @@ spring:
     password: ${DATABASE_PASSWORD}
     url: ${DATABASE_URL}
     driver-class-name: org.postgresql.Driver  
-    
+
+#TODO fazer credenciais do cloud do google 
+ 
   jpa:
     show-sql: true
     properties:

@@ -31,3 +31,6 @@ volumes:
 
 networks:
   rede:
+    name: rede  # <- Adicionando explicitamente o nome correto
+    driver: bridge
+  

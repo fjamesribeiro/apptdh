@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -35,10 +36,30 @@ public class JwtService {
 		String scopes = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 				.collect(Collectors.joining(" "));
 
-		var claims = JwtClaimsSet.builder().issuer("app-paquera").issuedAt(now).expiresAt(now.plusSeconds(expiry))
+		var claims = JwtClaimsSet.builder().issuer("app-tdah").issuedAt(now).expiresAt(now.plusSeconds(expiry))
 				.subject(authentication.getName()).claim("scope", scopes).build();
 
 		return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 	}
+	
+	public String generateTokenForGoogle(OAuth2User principal) {
+	    Instant now = Instant.now();
+	    long expiry = 86400L; // 1 dia
+
+	    String email = principal.getAttribute("email");
+	    String name = principal.getAttribute("name");
+
+	    var claims = JwtClaimsSet.builder()
+	            .issuer("app-tdah")
+	            .issuedAt(now)
+	            .expiresAt(now.plusSeconds(expiry))
+	            .subject(email) // O email do usuário será o subject do token
+	            .claim("name", name)
+	            .claim("scope", "USER") // Definindo uma role padrão para usuários do Google
+	            .build();
+
+	    return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+	}
+	
 
 }

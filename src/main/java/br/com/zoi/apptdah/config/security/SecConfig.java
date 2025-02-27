@@ -3,6 +3,7 @@ package br.com.zoi.apptdah.config.security;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,7 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 
+
 @Configuration
 @EnableWebSecurity
 public class SecConfig {
@@ -33,15 +35,26 @@ public class SecConfig {
 	@Value("${jwt.private-key}")
 	private RSAPrivateKey priv;
 
+	@Autowired
+	private CustomOAuth2UserService customOAuth2UserService;
+	
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.csrf(csrf -> csrf.disable())
-				.authorizeHttpRequests(
-						auth -> auth.requestMatchers("/auth/**").permitAll().anyRequest().authenticated())
-				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+	    httpSecurity
+	        .csrf(csrf -> csrf.disable())
+	        .authorizeHttpRequests(auth -> auth
+	            .requestMatchers("/auth/**").permitAll()  // Permite login normal
+	            .anyRequest().authenticated()
+	        )
+	        .oauth2Login(oauth2 -> oauth2
+	                .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService)) // Usa nosso serviço de usuário
+	                .defaultSuccessUrl("/oauth2/success", true)
+	            )	        
+	        .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
-		return httpSecurity.build();
+	    return httpSecurity.build();
 	}
+
 	
 	@Bean
 	JwtDecoder jwtDecoder() {
@@ -50,9 +63,11 @@ public class SecConfig {
 
 	@Bean
 	JwtEncoder jwtEncoder() {
-		RSAKey jwk = new RSAKey.Builder(key).privateKey(priv).build();
-		var jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
-		return new NimbusJwtEncoder(jwks);
+	    RSAKey jwk = new com.nimbusds.jose.jwk.RSAKey.Builder(key)
+	            .privateKey(priv)
+	            .build();
+	    var jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
+	    return new NimbusJwtEncoder(jwks);
 	}
 
 	@Bean

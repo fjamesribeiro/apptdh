@@ -46,4 +46,6 @@ public class AuthenticationController {
 		// 03 - Return the response to the user
 		return new ResponseEntity<>(authResponseDto, HttpStatus.OK);
 	}
+	
+	
 }
