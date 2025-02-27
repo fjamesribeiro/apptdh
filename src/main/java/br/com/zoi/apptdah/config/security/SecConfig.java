@@ -24,7 +24,6 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 
-
 @Configuration
 @EnableWebSecurity
 public class SecConfig {
@@ -37,25 +36,22 @@ public class SecConfig {
 
 	@Autowired
 	private CustomOAuth2UserService customOAuth2UserService;
-	
+
+	@Autowired
+	private OAuth2AuthenticationSuccessHandler successHandler;
+
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-	    httpSecurity
-	        .csrf(csrf -> csrf.disable())
-	        .authorizeHttpRequests(auth -> auth
-	            .requestMatchers("/auth/**").permitAll()  // Permite login normal
-	            .anyRequest().authenticated()
-	        )
-	        .oauth2Login(oauth2 -> oauth2
-	                .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService)) // Usa nosso serviço de usuário
-	                .defaultSuccessUrl("/oauth2/success", true)
-	            )	        
-	        .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
-
-	    return httpSecurity.build();
+		httpSecurity.csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll() // Permite login normal
+						.anyRequest().authenticated())
+				.oauth2Login(
+						oauth2 -> oauth2.userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+								.successHandler(successHandler))
+				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+		return httpSecurity.build();
 	}
 
-	
 	@Bean
 	JwtDecoder jwtDecoder() {
 		return NimbusJwtDecoder.withPublicKey(key).build();
@@ -63,11 +59,9 @@ public class SecConfig {
 
 	@Bean
 	JwtEncoder jwtEncoder() {
-	    RSAKey jwk = new com.nimbusds.jose.jwk.RSAKey.Builder(key)
-	            .privateKey(priv)
-	            .build();
-	    var jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
-	    return new NimbusJwtEncoder(jwks);
+		RSAKey jwk = new com.nimbusds.jose.jwk.RSAKey.Builder(key).privateKey(priv).build();
+		var jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
+		return new NimbusJwtEncoder(jwks);
 	}
 
 	@Bean
